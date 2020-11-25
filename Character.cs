@@ -7,13 +7,13 @@ namespace GADE5112POE
         protected int hp;
         protected int maxHp;
         protected int damage;
-        protected Tile[,] vision;
+        protected Tile[] vision;
         protected char symbol;
 
         public int Hp { get => hp; set => hp = value; }
         public int MaxHp { get => maxHp; set => maxHp = value; }
         public int Damage { get => damage; set => damage = value; }
-        public Tile[,] Vision { get => vision; set => vision = value; }
+        public Tile[] Vision { get => vision; set => vision = value; }
         public char Symbol { get => symbol; set => symbol = value; }
 
         public enum Movement { Idle, Up, Down, Right, Left }
