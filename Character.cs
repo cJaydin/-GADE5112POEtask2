@@ -18,9 +18,11 @@ namespace GADE5112POE
 
         public enum Movement { Idle, Up, Down, Right, Left }
 
-        public Character(int x, int y, char symbol, Delegate[] delegates) : base(x, y)
+        public Character(int hp, int damage, int maxHp, int x, int y) : base(x, y)
         {
-            Symbol = symbol;
+            this.hp = hp;
+            this.damage = damage;
+            this.maxHp = maxHp;
         }
 
         public virtual bool CheckRange(Character target)
