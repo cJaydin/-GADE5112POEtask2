@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GADE5112POE
+﻿namespace GADE5112POE
 {
     class Obstacle : Tile
     {
