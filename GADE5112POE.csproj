@@ -49,18 +49,41 @@
     <Compile Include="Character.cs" />
     <Compile Include="EmptyTile.cs" />
     <Compile Include="Enemy.cs" />
+    <Compile Include="frmCharacterStats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCharacterStats.Designer.cs">
+      <DependentUpon>frmCharacterStats.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmPlayerStats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPlayerStats.Designer.cs">
+      <DependentUpon>frmPlayerStats.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GameEngine.cs" />
+    <Compile Include="Goblin.cs" />
+    <Compile Include="Hero.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />
+    <Compile Include="Wall.cs" />
+    <EmbeddedResource Include="frmCharacterStats.resx">
+      <DependentUpon>frmCharacterStats.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPlayerStats.resx">
+      <DependentUpon>frmPlayerStats.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

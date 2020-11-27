@@ -2,23 +2,23 @@
 
 namespace GADE5112POE
 {
-    abstract class Character : Tile
+    public abstract class Character : Tile
     {
         protected int hp;
         protected int maxHp;
         protected int damage;
         protected Tile[] vision;
-        protected char symbol;
+        
 
         public int Hp { get => hp; set => hp = value; }
         public int MaxHp { get => maxHp; set => maxHp = value; }
         public int Damage { get => damage; set => damage = value; }
         public Tile[] Vision { get => vision; set => vision = value; }
-        public char Symbol { get => symbol; set => symbol = value; }
+        
 
         public enum Movement { Idle, Up, Down, Right, Left }
 
-        public Character(int hp, int damage, int maxHp, int x, int y) : base(x, y)
+        public Character(int hp, int damage, int maxHp, int x, int y, char symbol) : base(x, y, symbol)
         {
             this.hp = hp;
             this.damage = damage;

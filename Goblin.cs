@@ -4,7 +4,7 @@ namespace GADE5112POE
 {
     class Goblin : Enemy
     {
-        public Goblin(int x, int y) : base(10, 1, x, y) { }
+        public Goblin(int x, int y) : base(10, 1, x, y, 'G') { }
 
         private Random random = new Random();
 

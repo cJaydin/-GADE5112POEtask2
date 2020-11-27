@@ -2,9 +2,9 @@
 
 namespace GADE5112POE
 {
-    class Hero : Character
+    public class Hero : Character
     {
-        public Hero(int x, int y, int hp) : base(hp, 2, 10, x, y) { }
+        public Hero(int x, int y, int hp) : base(hp, 2, 10, x, y, 'H') { }
         public override Movement ReturnMove(Movement move = Movement.Idle)
         {
             if (Vision[(int)move].GetType()!=typeof(EmptyTile))

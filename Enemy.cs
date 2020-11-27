@@ -10,11 +10,12 @@ namespace GADE5112POE
     {
         protected Random r = new Random();
 
-        public Enemy(int hp, int damage, int x, int y) : base(hp, damage, hp, x, y) { }
+        public Enemy(int hp, int damage, int x, int y, char symbol) : base(hp, damage, hp, x, y, symbol) { }
 
         public override string ToString()
         {
-            return ToString() + "at [" + X + "," + Y + "] (" + damage + ")";
+            //return base.ToString() + "at [" + X + "," + Y + "] (" + damage + ")";
+            return "at [" + X + "," + Y + "] (" + damage + ")";
         }
     }
 }
