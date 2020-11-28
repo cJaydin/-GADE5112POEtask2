@@ -2,7 +2,7 @@
 
 namespace GADE5112POE
 {
-    class Map
+    public class Map
     {
         private Tile[,] arrMap;
         private Enemy[] arrEnemy;
@@ -19,7 +19,7 @@ namespace GADE5112POE
 
         internal void ClearPosition(Tile tile)
         {
-            ArrMap[tile.X, tile.Y] = null;
+            ArrMap[tile.X, tile.Y] = new EmptyTile(tile.X, tile.Y);
         }
 
         public Map(int minWidth, int maxWidth, int minHeight, int maxHeight, int enemyCount)
@@ -29,7 +29,6 @@ namespace GADE5112POE
 
             ArrMap = new Tile[MapWidth, MapHeight];
             ArrEnemy = new Enemy[enemyCount];
-
 
             // First fill map with empty tiles
             for (int i=0; i < mapWidth; i++)
@@ -57,48 +56,64 @@ namespace GADE5112POE
                 ArrMap[mapWidth - 1, i] = rightTile;
             }
 
-            Hero = (Hero)Create(Tile.TileType.Hero);
+            Hero = (Hero)Create(Tile.TileType.Hero,-1);
             ArrMap[Hero.X, Hero.Y] = Hero;
 
             for (int i = 0; i < enemyCount; i++)
             {
-                arrEnemy[i] = (Enemy)Create(Tile.TileType.Enemy);
+                arrEnemy[i] = (Enemy)Create(Tile.TileType.Enemy,i);
 
                 arrMap[arrEnemy[i].X, arrEnemy[i].Y] = arrEnemy[i];
 
                 int chance = r.Next(1, 3);
-                int x = r.Next(1, mapWidth);
-                int y = r.Next(1, mapHeight);
+                int x = r.Next(1, mapWidth-2);
+                int y = r.Next(1, mapHeight-2);
 
                 if (chance == 1)
                 {
-                    arrEnemy[i] = new Goblin(x, y);
+                    arrEnemy[i] = new Goblin(x, y, i);
                 }
                 else
                 {
-                    //  arrEnemy[i] = new Mage(5, 5, 5, x, y);
+                    arrEnemy[i] = new Goblin(x, y, i);
                 }
             }
+            new frmMapDebug(this).Show();
             UpdateVision();
         }
 
-        internal void UpdatePositions()
+        bool MapContainsCharacterAt(int x, int y)
         {
-            foreach (Tile tile in ArrMap)
+            if (Hero.X==x && Hero.Y==y) { return true; }
+
+            for (int i=0; i < arrEnemy.Length; i++)
             {
-                ArrMap[tile.X, tile.Y] = tile;
+                Tile t = arrEnemy[i];
+                if (t==null) { return false; }
+                if (t.X==x && t.Y==y) { return true; }
             }
+
+            return false;
         }
 
-        private Tile Create(Tile.TileType type)
+        private Tile Create(Tile.TileType type, int arrayIndex)
         {
             Random r = new Random();
 
-            int x = r.Next(1, mapWidth);
-            int y = r.Next(1, mapHeight);
+            if (Hero==null)
+            {
+                Hero = new Hero(0, 0, 10); // Dummy Hero for MapContainsCharacterAt to work
+            }
 
-            if (x >= mapWidth-1) { x--; }
-            if (y >= mapHeight-1) { y--; }
+            int x = 0, y = 0;
+            do
+            {
+                x = r.Next(1, mapWidth - 2);
+                y = r.Next(1, mapHeight - 2);
+            } while (MapContainsCharacterAt(x, y));
+
+            //if (x >= mapWidth-2) { x -= 2; }
+            //if (y >= mapHeight-2) { y-=2; }
 
             if (type == 0)
             {
@@ -106,25 +121,29 @@ namespace GADE5112POE
             }
             else
             {
-                return new Goblin(x, y);
+                return new Goblin(x, y, arrayIndex); // In order to run place breakpoint here (else only one goblin is generated)
             }
         }
 
         public void UpdateVision()
         {
-            Hero.Vision = new Tile[4]{
-            arrMap[Hero.X -1, Hero.Y],
-            arrMap[Hero.X + 1, Hero.Y],
-            arrMap[Hero.X, Hero.Y - 1],
-            arrMap[Hero.X, Hero.Y + 1]};
+            Hero.Vision = new Tile[5];
+
+            Hero.Vision[(int)Hero.Movement.Idle] = null;
+            Hero.Vision[(int)Hero.Movement.Up] = arrMap[Hero.X, Hero.Y - 1];
+            Hero.Vision[(int)Hero.Movement.Down] = arrMap[Hero.X, Hero.Y + 1];
+            Hero.Vision[(int)Hero.Movement.Left] = arrMap[Hero.X-1, Hero.Y];
+            Hero.Vision[(int)Hero.Movement.Right] = arrMap[Hero.X+1, Hero.Y];
 
             for (int i = 0; i < arrEnemy.Length; i++)
             {
-                arrEnemy[i].Vision = new Tile[4]{
-                arrMap[arrEnemy[i].X -1, arrEnemy[i].Y],
-                arrMap[arrEnemy[i].X + 1, arrEnemy[i].Y],
-                arrMap[arrEnemy[i].X, arrEnemy[i].Y - 1],
-                arrMap[arrEnemy[i].X, arrEnemy[i].Y + 1] };
+                arrEnemy[i].Vision = new Tile[5];
+
+                arrEnemy[i].Vision[(int)Hero.Movement.Idle] = null;
+                arrEnemy[i].Vision[(int)Hero.Movement.Up] = ArrMap[arrEnemy[i].X, arrEnemy[i].Y - 1];
+                arrEnemy[i].Vision[(int)Hero.Movement.Down] = ArrMap[arrEnemy[i].X, arrEnemy[i].Y + 1];
+                arrEnemy[i].Vision[(int)Hero.Movement.Left] = ArrMap[arrEnemy[i].X-1, arrEnemy[i].Y];
+                arrEnemy[i].Vision[(int)Hero.Movement.Right] = ArrMap[arrEnemy[i].X+1, arrEnemy[i].Y];
             }
 
         }

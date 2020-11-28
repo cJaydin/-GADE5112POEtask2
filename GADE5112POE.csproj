@@ -61,6 +61,12 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmMapDebug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMapDebug.Designer.cs">
+      <DependentUpon>frmMapDebug.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmPlayerStats.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +76,7 @@
     <Compile Include="GameEngine.cs" />
     <Compile Include="Goblin.cs" />
     <Compile Include="Hero.cs" />
+    <Compile Include="IView.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
@@ -81,6 +88,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMapDebug.resx">
+      <DependentUpon>frmMapDebug.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmPlayerStats.resx">
       <DependentUpon>frmPlayerStats.cs</DependentUpon>

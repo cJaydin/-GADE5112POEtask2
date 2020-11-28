@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace GADE5112POE
 {
-    abstract class Enemy : Character
+    public abstract class Enemy : Character
     {
         protected Random r = new Random();
+        public int ArrayIndex { get; internal set; }
 
-        public Enemy(int hp, int damage, int x, int y, char symbol) : base(hp, damage, hp, x, y, symbol) { }
+        public Enemy(int hp, int damage, int x, int y, char symbol, int arrayIndex) : base(hp, damage, hp, x, y, symbol)
+        {
+            ArrayIndex = arrayIndex;
+        }
 
         public override string ToString()
         {
