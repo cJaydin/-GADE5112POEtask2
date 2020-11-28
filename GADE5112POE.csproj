@@ -75,8 +75,11 @@
     </Compile>
     <Compile Include="GameEngine.cs" />
     <Compile Include="Goblin.cs" />
+    <Compile Include="Gold.cs" />
     <Compile Include="Hero.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="IView.cs" />
+    <Compile Include="Mage.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Program.cs" />
