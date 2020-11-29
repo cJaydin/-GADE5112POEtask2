@@ -8,27 +8,58 @@ namespace GADE5112POE
     public partial class frmMain : Form, IView
     {
         private GameEngine Game;
+        private Queue<string> MessageBuffer = new Queue<string>(36);
 
         public frmMain()
         {
             InitializeComponent();
 
-            Game = new GameEngine(this, 20, 43, 20, 30, 10);
-            RenderMap(Game.MapCreate);
-            this.Refresh();
+            dialogueNewOrLoadGame dlg = new dialogueNewOrLoadGame();
+            dlg.ShowDialog();
+            if (dlg.DialogResult == DialogResult.OK)
+            {
+                NewGame();
+            }
+            else
+            {
+                Game = new GameEngine();
+                Game.Load();
+                Game.MapCreate.UpdateVision();
+                Game.MainForm = this;
+                RenderMap(Game.MapCreate);
+            }
+        }
 
-            frmPlayerStats frmPlayerStats = new frmPlayerStats(Game.MapCreate.Hero);
-            frmPlayerStats.Show();
+        private void NewGame()
+        {
+            Random random = new Random();
+            int itemCount = random.Next(4, 7);
+
+            Game = new GameEngine(this, 20, 43, 20, 30, 10, itemCount);
+            RenderMap(Game.MapCreate);
             Application.DoEvents();
             this.Refresh();
-            frmPlayerStats.Refresh();
-
             this.Focus();
         }
 
         public void Output(string text)
         {
-            txtOuput.Text += text + "\r\n";
+            if (MessageBuffer.Count > 35)
+            {
+                MessageBuffer.Dequeue();
+                MessageBuffer.Enqueue(text);
+
+                txtOuput.Text = String.Empty;
+                foreach (string s in MessageBuffer.ToArray())
+                {
+                    txtOuput.Text += s + "\r\n";
+                }
+            }
+            else
+            {
+                MessageBuffer.Enqueue(text);
+                txtOuput.Text += text + "\r\n";
+            }
         }
 
         public void DeleteTile(Tile t)
@@ -61,7 +92,7 @@ namespace GADE5112POE
 
         private void CharacterButton_Click(object sender, System.EventArgs e)
         {
-            if ( ((Button)sender).Tag.GetType().BaseType.Name != "Enemy") { return; }
+            if (((Button)sender).Tag.GetType().BaseType.Name != "Enemy") { return; }
 
             Enemy enemy = (Enemy)((Button)sender).Tag;
 
@@ -90,6 +121,9 @@ namespace GADE5112POE
                 }
             }
 
+            txtOuput.Text = String.Empty;
+            MessageBuffer.Clear(); 
+
             foreach (Control c in controls)
             {
                 this.Controls.Remove(c);
@@ -97,7 +131,7 @@ namespace GADE5112POE
 
             Button newGame = new Button();
             newGame.Text = "New Game";
-            newGame.Location = new Point(this.Location.X/2,this.Location.Y/2 - 40);
+            newGame.Location = new Point(this.Location.X / 2, this.Location.Y / 2 - 40);
             newGame.Click += NewGame_Click;
             this.Controls.Add(newGame);
         }
@@ -105,11 +139,7 @@ namespace GADE5112POE
         private void NewGame_Click(object sender, System.EventArgs e)
         {
             this.Controls.Remove((Control)sender);
-            txtOuput.Text = String.Empty;
-            Game = new GameEngine(this, 20, 43, 20, 30, 10);
-            RenderMap(Game.MapCreate);
-            this.Refresh();
-            this.Focus();
+            NewGame();
         }
 
         private void btnUp_Click(object sender, System.EventArgs e)
@@ -130,6 +160,32 @@ namespace GADE5112POE
         private void btnLeft_Click(object sender, System.EventArgs e)
         {
             Game.MovePlayer(Character.Movement.Left);
+        }
+
+        private void btnShowHeroStats_Click(object sender, EventArgs e)
+        {
+            Output(Game.MapCreate.Hero.ToString());
+        }
+
+        private void btnShowEnemyStats_Click(object sender, EventArgs e)
+        {
+            foreach (Enemy enemy in Game.MapCreate.ArrEnemy)
+            {
+                Output(enemy.ToString());
+            }
+        }
+
+        private void btnLoadGame_Click(object sender, EventArgs e)
+        {
+            Game.Load();
+            Game.MapCreate.UpdateVision();
+            Game.MainForm = this;
+            RenderMap(Game.MapCreate);
+        }
+
+        private void btnSaveGame_Click(object sender, EventArgs e)
+        {
+            Game.Save();
         }
     }
 }

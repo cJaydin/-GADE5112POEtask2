@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GADE5112POE
 {
@@ -19,7 +15,22 @@ namespace GADE5112POE
         public override string ToString()
         {
             //return base.ToString() + "at [" + X + "," + Y + "] (" + damage + ")";
-            return "at [" + X + "," + Y + "] (" + damage + ")";
+            return GetType().Name + " at [" + X + "," + Y + "]  HP: " + Hp + "/" + maxHp + " (" + damage + " DMG)";
+        }
+
+        internal bool Attack(Enemy goblin, frmMain formMain)
+        {
+            formMain.Output("Mage attacks goblin");
+            goblin.Hp -= this.damage;
+            formMain.Output(goblin.ToString());
+
+            if (goblin.Hp < 1)
+            {
+                formMain.Output("Goblin has died");
+                return true;
+            }
+
+            return false;
         }
     }
 }

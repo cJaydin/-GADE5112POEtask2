@@ -17,10 +17,11 @@ namespace GADE5112POE
             throw new NotImplementedException();
         }
 
-        public Gold(int x, int y) : base(x, y, '$')
+        public Gold(int x, int y, int quanity, int arrayIndex) : base(x, y, '$', arrayIndex)
         {
             Random r = new Random();
             goldDrop = r.Next(1, 6);
+            Quantity = goldDrop;
         }
     }
 }

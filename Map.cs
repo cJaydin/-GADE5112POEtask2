@@ -6,6 +6,7 @@ namespace GADE5112POE
     {
         private Tile[,] arrMap;
         private Enemy[] arrEnemy;
+        private Item[] arrItem;
         private Hero hero;
         private int mapHeight;
         private int mapWidth;
@@ -15,20 +16,26 @@ namespace GADE5112POE
         public int MapWidth { get => mapWidth; set => mapWidth = value; }
         public Tile[,] ArrMap { get => arrMap; set => arrMap = value; }
         public Enemy[] ArrEnemy { get => arrEnemy; set => arrEnemy = value; }
+        public Item[] ArrItem { get => arrItem; set => arrItem = value; }
         public Hero Hero { get => hero; set => hero = value; }
 
-        internal void ClearPosition(Tile tile)
+        // Constructor when game is loaded
+        public Map(int mapWidth, int mapHeight)
         {
-            ArrMap[tile.X, tile.Y] = new EmptyTile(tile.X, tile.Y);
+            MapWidth = mapWidth;
+            MapHeight = mapHeight;
+
+            ArrMap = new Tile[mapWidth, mapHeight];
         }
 
-        public Map(int minWidth, int maxWidth, int minHeight, int maxHeight, int enemyCount)
+        public Map(int minWidth, int maxWidth, int minHeight, int maxHeight, int enemyCount, int itemCount)
         {
             MapHeight = r.Next(minHeight, maxHeight);
             MapWidth = r.Next(minWidth, maxWidth);
 
             ArrMap = new Tile[MapWidth, MapHeight];
             ArrEnemy = new Enemy[enemyCount];
+            ArrItem = new Item[itemCount];
 
             // First fill map with empty tiles
             for (int i=0; i < mapWidth; i++)
@@ -64,20 +71,15 @@ namespace GADE5112POE
                 arrEnemy[i] = (Enemy)Create(Tile.TileType.Enemy,i);
 
                 arrMap[arrEnemy[i].X, arrEnemy[i].Y] = arrEnemy[i];
-
-                int chance = r.Next(1, 3);
-                int x = r.Next(1, mapWidth-2);
-                int y = r.Next(1, mapHeight-2);
-
-                if (chance == 1)
-                {
-                    arrEnemy[i] = new Goblin(x, y, i);
-                }
-                else
-                {
-                    arrEnemy[i] = new Goblin(x, y, i);
-                }
             }
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                Gold gold = (Gold)Create(Tile.TileType.Gold, i);
+                ArrItem[i] = gold;
+                arrMap[gold.X, gold.Y] = gold;
+            }
+
             new frmMapDebug(this).Show();
             UpdateVision();
         }
@@ -98,7 +100,7 @@ namespace GADE5112POE
 
         private Tile Create(Tile.TileType type, int arrayIndex)
         {
-            Random r = new Random();
+            Random random = new Random();
 
             if (Hero==null)
             {
@@ -108,20 +110,79 @@ namespace GADE5112POE
             int x = 0, y = 0;
             do
             {
-                x = r.Next(1, mapWidth - 2);
-                y = r.Next(1, mapHeight - 2);
+                x = random.Next(1, mapWidth - 2);
+                y = random.Next(1, mapHeight - 2);
             } while (MapContainsCharacterAt(x, y));
 
             //if (x >= mapWidth-2) { x -= 2; }
             //if (y >= mapHeight-2) { y-=2; }
 
-            if (type == 0)
+            if (type == Tile.TileType.Hero)
             {
                 return new Hero(x, y, 10);
             }
-            else
+            else if (type == Tile.TileType.Enemy)
             {
-                return new Goblin(x, y, arrayIndex); // In order to run place breakpoint here (else only one goblin is generated)
+                int chance = random.Next(1, 7);
+
+                if (chance == 1)
+                {
+                    return new Mage(x, y, arrayIndex);
+                }
+                else
+                {
+                   return new Goblin(x, y, arrayIndex);
+                }
+            } else if (type == Tile.TileType.Gold)
+            {
+                return new Gold(x, y, random.Next(1,10),arrayIndex);
+            }
+
+            return null;
+        }
+
+        internal void MoveEnemies()
+        {
+            Random random = new Random();
+            for (int i=0; i < arrEnemy.Length; i++)
+            {
+                if (arrEnemy[i].GetType()==typeof(Mage)) { continue; }
+
+                Character.Movement direction = (Character.Movement)random.Next(0,5);
+                if (direction!=Character.Movement.Idle)
+                {
+                    Enemy enemy = arrEnemy[i];
+                    arrMap[enemy.X, enemy.Y] = new EmptyTile(enemy.X,enemy.Y);
+                    switch (direction)
+                    {
+                        case Character.Movement.Up:
+                            if (enemy.Y > 1 && enemy.Vision[(int)Character.Movement.Up].GetType()!=typeof(Hero))
+                            {
+                                enemy.Y--;
+                            }
+                            break;
+                        case Character.Movement.Down:
+                            if (enemy.Y < (MapHeight-2) && enemy.Vision[(int)Character.Movement.Down].GetType() != typeof(Hero))
+                            {
+                                enemy.Y++;
+                            }
+                            break;
+                        case Character.Movement.Left:
+                            if (enemy.X > 2 && enemy.Vision[(int)Character.Movement.Left].GetType() != typeof(Hero))
+                            {
+                                enemy.X--;
+                            }
+                            break;
+                        case Character.Movement.Right:
+                            if (enemy.X < (mapWidth-2) && enemy.Vision[(int)Character.Movement.Right].GetType() != typeof(Hero))
+                            {
+                                enemy.X++;
+                            }
+                            break;
+                    }
+                    enemy.Button.Location = new System.Drawing.Point(enemy.X * 20, enemy.Y * 20);
+                    arrMap[enemy.X, enemy.Y] = enemy;
+                }
             }
         }
 
@@ -146,6 +207,34 @@ namespace GADE5112POE
                 arrEnemy[i].Vision[(int)Hero.Movement.Right] = ArrMap[arrEnemy[i].X+1, arrEnemy[i].Y];
             }
 
+        }
+
+        public void DeleteItemFromItemArray(Item item)
+        {
+            Item[] items = new Item[ArrItem.Length - 1];
+            int i = 0;
+            foreach (Item itm in ArrItem)
+            {
+                if (itm.ArrayIndex != item.ArrayIndex)
+                {
+                    items[i++] = itm;
+                }
+            }
+            ArrItem = items;
+        }
+
+        public Item GetItemAtPosition(int x, int y)
+        {
+            foreach (Item item in ArrItem)
+            {
+                if (item.X==x && item.Y==y)
+                {
+                    DeleteItemFromItemArray(item);
+                    return item;
+                } 
+            }
+
+            return null;
         }
     }
 }

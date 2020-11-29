@@ -27,46 +27,54 @@ namespace GADE5112POE
 
         public virtual bool CheckRange(Character target)
         {
-            int range = DistanceTo(target);
+            //int range = DistanceTo(target);
 
-            if (range <= 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            //if (range <= 1)
+            //{
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
+
+            throw new NotImplementedException();
         }
 
         public int DistanceTo(Character target)
         {
-            return (Math.Abs(X - target.X) + Math.Abs(Y - target.Y));
+            //return (Math.Abs(X - target.X) + Math.Abs(Y - target.Y));
+
+            throw new NotImplementedException();
         }
 
         public void Move(Movement move)
         {
-            switch (move)
-            {
-                case Movement.Idle: //How to show IDLE position
-                    break;
-                case Movement.Up:
-                    Y++;                    break;
-                case Movement.Down:
-                    Y--;
-                    break;
-                case Movement.Right:
-                    x++;
-                    break;
-                case Movement.Left:
-                    x--;
-                    break;
-                default:
-                    break;
-            }
+            //switch (move)
+            //{
+            //    case Movement.Idle: //How to show IDLE position
+            //        break;
+            //    case Movement.Up:
+            //        Y++;                    break;
+            //    case Movement.Down:
+            //        Y--;
+            //        break;
+            //    case Movement.Right:
+            //        x++;
+            //        break;
+            //    case Movement.Left:
+            //        x--;
+            //        break;
+            //    default:
+            //        break;
+            //}
+
+            throw new NotImplementedException();
         }
 
         public abstract Movement ReturnMove(Movement move = 0);
+
+        public abstract void Pickup(Item item, frmMain mainForm);
 
         public abstract override string ToString();
     }

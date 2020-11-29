@@ -47,6 +47,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Character.cs" />
+    <Compile Include="dialogueNewOrLoadGame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dialogueNewOrLoadGame.Designer.cs">
+      <DependentUpon>dialogueNewOrLoadGame.cs</DependentUpon>
+    </Compile>
+    <Compile Include="dialoguePickupItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dialoguePickupItem.Designer.cs">
+      <DependentUpon>dialoguePickupItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="EmptyTile.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="frmCharacterStats.cs">
@@ -86,6 +98,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="Wall.cs" />
+    <Compile Include="Weapon.cs" />
+    <EmbeddedResource Include="dialogueNewOrLoadGame.resx">
+      <DependentUpon>dialogueNewOrLoadGame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dialoguePickupItem.resx">
+      <DependentUpon>dialoguePickupItem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterStats.resx">
       <DependentUpon>frmCharacterStats.cs</DependentUpon>
     </EmbeddedResource>
